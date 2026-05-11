@@ -124,6 +124,7 @@ export default function Index() {
   const [activeChat, setActiveChat] = useState<number | null>(1);
   const [filter, setFilter] = useState<"all" | "pinned" | "favorite">("all");
   const [msgInput, setMsgInput] = useState("");
+  const [showInfo, setShowInfo] = useState(false);
   const [messages, setMessages] = useState(MESSAGES);
 
   const filteredChats = CHATS.filter(c => {
@@ -430,7 +431,6 @@ export default function Index() {
                 {[
                   { icon: "Search", label: "Поиск" },
                   { icon: "Phone", label: "Звонок" },
-                  { icon: "MoreVertical", label: "Ещё" },
                 ].map(btn => (
                   <button
                     key={btn.icon}
@@ -441,6 +441,14 @@ export default function Index() {
                     <Icon name={btn.icon} size={16} />
                   </button>
                 ))}
+                <button
+                  onClick={() => setShowInfo(v => !v)}
+                  className="p-1.5 rounded transition-all hover:bg-secondary"
+                  style={{ color: showInfo ? "hsl(var(--gold))" : "hsl(var(--muted-foreground))" }}
+                  title="Информация"
+                >
+                  <Icon name="Info" size={16} />
+                </button>
               </div>
             </header>
 
@@ -548,6 +556,85 @@ export default function Index() {
           </div>
         )}
       </main>
+
+      {/* Right info panel */}
+      {showInfo && currentChat && section === "chats" && (
+        <aside
+          className="w-64 flex flex-col flex-shrink-0 animate-slide-in-right"
+          style={{ background: "hsl(var(--panel))", borderLeft: "1px solid hsl(var(--divider))" }}
+        >
+          <div className="flex items-center justify-between px-4 pt-4 pb-3" style={{ borderBottom: "1px solid hsl(var(--divider))" }}>
+            <span className="text-xs uppercase tracking-widest font-medium" style={{ color: "hsl(var(--muted-foreground))" }}>Информация</span>
+            <button onClick={() => setShowInfo(false)} style={{ color: "hsl(var(--muted-foreground))" }}>
+              <Icon name="X" size={14} />
+            </button>
+          </div>
+
+          <div className="flex flex-col items-center px-4 py-5 gap-2" style={{ borderBottom: "1px solid hsl(var(--divider))" }}>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center font-display text-xl font-semibold"
+              style={{ background: "hsl(var(--accent))", color: "hsl(var(--gold))", border: "1px solid hsl(var(--gold) / 0.3)" }}
+            >
+              {currentChat.initials}
+            </div>
+            <div className="font-display text-base font-semibold text-center" style={{ color: "hsl(var(--foreground))" }}>
+              {currentChat.name}
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: currentChat.online ? "#4ade80" : "hsl(var(--muted-foreground))" }} />
+              <span className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{currentChat.online ? "В сети" : "Не в сети"}</span>
+            </div>
+          </div>
+
+          {/* Quick actions */}
+          <div className="grid grid-cols-3 gap-1 px-3 py-3" style={{ borderBottom: "1px solid hsl(var(--divider))" }}>
+            {[
+              { icon: "Phone", label: "Звонок" },
+              { icon: "Star", label: "Избранное" },
+              { icon: "Bell", label: "Тихо" },
+            ].map(a => (
+              <button key={a.icon} className="flex flex-col items-center gap-1 py-2 rounded transition-all hover:bg-secondary">
+                <Icon name={a.icon} size={15} style={{ color: "hsl(var(--gold))" }} />
+                <span className="text-[9px] uppercase tracking-wide" style={{ color: "hsl(var(--muted-foreground))" }}>{a.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Shared files */}
+          <div className="px-4 pt-3 pb-2">
+            <div className="text-xs uppercase tracking-widest mb-2 font-medium" style={{ color: "hsl(var(--muted-foreground))" }}>Файлы</div>
+            <div className="space-y-1.5">
+              {[
+                { icon: "FileText", name: "Договор_сделка.pdf", size: "340 КБ" },
+                { icon: "FileSpreadsheet", name: "Отчёт_Q1_2026.xlsx", size: "128 КБ" },
+                { icon: "File", name: "Приложение_1.docx", size: "85 КБ" },
+              ].map((f, i) => (
+                <div key={i} className="flex items-center gap-2 p-2 rounded cursor-pointer transition-all hover:bg-secondary">
+                  <Icon name={f.icon} size={14} style={{ color: "hsl(var(--gold-dim))" }} />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs truncate" style={{ color: "hsl(var(--foreground))" }}>{f.name}</div>
+                    <div className="text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>{f.size}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Pinned messages */}
+          <div className="px-4 pt-2 pb-3">
+            <div className="text-xs uppercase tracking-widest mb-2 font-medium" style={{ color: "hsl(var(--muted-foreground))" }}>Закреплённые</div>
+            {currentMessages.filter(m => m.pinned).length === 0 ? (
+              <p className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>Нет закреплённых</p>
+            ) : (
+              currentMessages.filter(m => m.pinned).map(m => (
+                <div key={m.id} className="p-2 rounded text-xs" style={{ background: "hsl(var(--secondary))", color: "hsl(var(--foreground))" }}>
+                  {m.text}
+                </div>
+              ))
+            )}
+          </div>
+        </aside>
+      )}
     </div>
   );
 }
