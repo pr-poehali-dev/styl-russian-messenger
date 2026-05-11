@@ -4,54 +4,53 @@
 
 @layer base {
   :root {
-    /* Полностью тёмная тема */
-    --background: 0 0% 4%;
-    --foreground: 0 0% 90%;
+    --background: 220 13% 9%;
+    --foreground: 210 20% 88%;
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 90%;
+    --card: 220 12% 12%;
+    --card-foreground: 210 20% 88%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 90%;
+    --popover: 220 12% 12%;
+    --popover-foreground: 210 20% 88%;
 
-    --primary: 34 45% 65%;
-    --primary-foreground: 0 0% 4%;
+    --primary: 34 45% 68%;
+    --primary-foreground: 220 13% 9%;
 
-    --secondary: 0 0% 9%;
-    --secondary-foreground: 0 0% 70%;
+    --secondary: 220 10% 16%;
+    --secondary-foreground: 210 15% 70%;
 
-    --muted: 0 0% 9%;
-    --muted-foreground: 0 0% 42%;
+    --muted: 220 10% 16%;
+    --muted-foreground: 215 12% 50%;
 
-    --accent: 34 25% 14%;
-    --accent-foreground: 34 45% 70%;
+    --accent: 34 30% 22%;
+    --accent-foreground: 34 45% 75%;
 
-    --destructive: 0 60% 48%;
-    --destructive-foreground: 0 0% 90%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 210 20% 88%;
 
-    --border: 0 0% 12%;
-    --input: 0 0% 9%;
-    --ring: 34 45% 65%;
+    --border: 220 10% 18%;
+    --input: 220 10% 16%;
+    --ring: 34 45% 68%;
 
     --radius: 0.25rem;
 
-    --sidebar-background: 0 0% 3%;
-    --sidebar-foreground: 0 0% 60%;
-    --sidebar-primary: 34 45% 65%;
-    --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 0 0% 7%;
-    --sidebar-accent-foreground: 34 45% 70%;
-    --sidebar-border: 0 0% 10%;
-    --sidebar-ring: 34 45% 65%;
+    --sidebar-background: 220 14% 7%;
+    --sidebar-foreground: 210 15% 70%;
+    --sidebar-primary: 34 45% 68%;
+    --sidebar-primary-foreground: 220 13% 9%;
+    --sidebar-accent: 220 10% 13%;
+    --sidebar-accent-foreground: 34 45% 75%;
+    --sidebar-border: 220 10% 14%;
+    --sidebar-ring: 34 45% 68%;
 
     /* СТЕЛ custom */
-    --gold: 34 45% 65%;
-    --gold-dim: 34 28% 42%;
-    --panel: 0 0% 6%;
-    --chat-bg: 0 0% 4%;
-    --msg-own: 0 0% 10%;
-    --msg-other: 0 0% 7%;
-    --divider: 0 0% 11%;
+    --gold: 34 45% 68%;
+    --gold-dim: 34 30% 45%;
+    --panel: 220 12% 11%;
+    --chat-bg: 220 13% 8%;
+    --msg-own: 220 12% 15%;
+    --msg-other: 220 10% 13%;
+    --divider: 220 10% 18%;
   }
 }
 
@@ -65,7 +64,6 @@
     font-family: "IBM Plex Sans", sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
-    overscroll-behavior: none;
   }
 
   h1,
@@ -76,7 +74,7 @@
   }
 
   ::-webkit-scrollbar {
-    width: 2px;
+    width: 3px;
   }
 
   ::-webkit-scrollbar-track {
@@ -95,15 +93,11 @@
 
 @layer utilities {
   .animate-fade-in {
-    animation: fade-in 0.25s ease forwards;
+    animation: fade-in 0.3s ease forwards;
   }
 
   .animate-slide-in-right {
-    animation: slide-in-right 0.28s ease forwards;
-  }
-
-  .animate-slide-up {
-    animation: slide-up 0.3s ease forwards;
+    animation: slide-in-right 0.3s ease forwards;
   }
 
   .animate-scale-in {
@@ -113,7 +107,7 @@
   @keyframes fade-in {
     from {
       opacity: 0;
-      transform: translateY(5px);
+      transform: translateY(6px);
     }
     to {
       opacity: 1;
@@ -124,7 +118,7 @@
   @keyframes slide-in-right {
     from {
       opacity: 0;
-      transform: translateX(14px);
+      transform: translateX(16px);
     }
     to {
       opacity: 1;
@@ -132,21 +126,10 @@
     }
   }
 
-  @keyframes slide-up {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   @keyframes scale-in {
     from {
       opacity: 0;
-      transform: scale(0.96);
+      transform: scale(0.97);
     }
     to {
       opacity: 1;
@@ -154,34 +137,22 @@
     }
   }
 
-  /* Bottom nav (mobile) */
-  .bottom-nav-item {
-    @apply flex flex-col items-center justify-center gap-1 flex-1 py-2 cursor-pointer transition-all duration-200 relative;
-    color: hsl(var(--muted-foreground));
-    min-height: 56px;
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 hsl(var(--gold) / 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 8px hsl(var(--gold) / 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 hsl(var(--gold) / 0);
+    }
   }
 
-  .bottom-nav-item:hover {
-    color: hsl(var(--foreground));
+  .pulse-gold {
+    animation: pulse-ring 2s infinite;
   }
 
-  .bottom-nav-item.active {
-    color: hsl(var(--gold));
-  }
-
-  .bottom-nav-item.active::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 2px;
-    background: hsl(var(--gold));
-    border-radius: 2px 2px 0 0;
-  }
-
-  /* Desktop nav (sidebar — оставляем только иконки без текста) */
   .nav-item {
     @apply flex flex-col items-center gap-1 py-3 px-2 cursor-pointer transition-all duration-200 relative;
     color: hsl(var(--muted-foreground));
@@ -208,8 +179,7 @@
   }
 
   .chat-row {
-    @apply flex items-center gap-3 px-4 py-3 cursor-pointer transition-all duration-150;
-    border-bottom: 1px solid hsl(var(--divider));
+    @apply flex items-center gap-3 px-4 py-3 cursor-pointer transition-all duration-150 border-b border-transparent;
   }
 
   .chat-row:hover {
@@ -218,10 +188,24 @@
 
   .chat-row.active {
     background: hsl(var(--accent));
+    border-color: hsl(var(--gold-dim) / 0.3);
+  }
+
+  .gold-text {
+    color: hsl(var(--gold));
+  }
+
+  .gold-border {
+    border-color: hsl(var(--gold) / 0.4);
+  }
+
+  .glass {
+    background: hsl(var(--panel));
+    border: 1px solid hsl(var(--divider));
   }
 
   .badge-unread {
-    @apply font-medium rounded-full px-1.5 py-0.5 min-w-[18px] text-center;
+    @apply text-xs font-medium rounded-full px-1.5 py-0.5 min-w-[18px] text-center;
     background: hsl(var(--gold));
     color: hsl(var(--primary-foreground));
     font-family: "IBM Plex Sans", sans-serif;
