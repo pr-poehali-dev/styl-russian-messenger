@@ -510,6 +510,25 @@ export default function Index() {
   return (
     <div className="flex flex-col h-screen overflow-hidden" style={{ background: "hsl(var(--chat-bg))" }}>
 
+      {/* Поехали badge */}
+      <div
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      >
+        <span className="text-[11px] px-3 py-1 pointer-events-auto" style={{ color: "hsl(var(--muted-foreground) / 0.45)" }}>
+          Сделано с{" "}
+          <a
+            href="https://poehali.dev"
+            target="_blank"
+            rel="noreferrer"
+            className="transition-opacity hover:opacity-80"
+            style={{ color: "hsl(var(--gold) / 0.55)" }}
+          >
+            poehali.dev
+          </a>
+        </span>
+      </div>
+
       {/* Modals */}
       {showNewChat && (
         <Modal onClose={() => setShowNewChat(false)}>

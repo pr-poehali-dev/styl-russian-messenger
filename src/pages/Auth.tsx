@@ -216,6 +216,13 @@ export default function Auth({ onAuth }: AuthProps) {
       <p className="text-xs mt-6 text-center" style={{ color: "hsl(var(--muted-foreground))" }}>
         Надёжное шифрование · Приватность данных
       </p>
+
+      <p
+        className="fixed top-3 left-0 right-0 text-center text-xs select-none"
+        style={{ color: "hsl(var(--muted-foreground) / 0.5)" }}
+      >
+        Сделано с <a href="https://poehali.dev" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity" style={{ color: "hsl(var(--gold) / 0.6)" }}>poehali.dev</a>
+      </p>
     </div>
   );
 }
