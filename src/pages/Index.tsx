@@ -112,6 +112,11 @@ export default function Index() {
   // Mobile: когда открыт чат — показываем его (скрываем list)
   const [mobileChatOpen, setMobileChatOpen] = useState(false);
 
+  // FAB (кнопка-ручка)
+  const [fabOpen, setFabOpen] = useState(false);
+  const [showContactsSheet, setShowContactsSheet] = useState(false);
+  const [contactsSearchQuery, setContactsSearchQuery] = useState("");
+
   // Modals
   const [showNewChat, setShowNewChat] = useState(false);
   const [showNewContact, setShowNewContact] = useState(false);
@@ -665,6 +670,196 @@ export default function Index() {
             </button>
           ))}
         </nav>
+      )}
+
+      {/* ── FAB (кнопка-ручка) — видна везде кроме открытого чата на мобайле ── */}
+      {!mobileChatOpen && (
+        <>
+          {/* Затемнение при открытом FAB */}
+          {fabOpen && (
+            <div
+              className="fixed inset-0 z-30"
+              style={{ background: "rgba(0,0,0,0.45)" }}
+              onClick={() => setFabOpen(false)}
+            />
+          )}
+
+          {/* FAB меню — пункты */}
+          {fabOpen && (
+            <div className="fixed md:bottom-20 bottom-28 right-5 z-40 flex flex-col items-end gap-2.5 animate-slide-up">
+              {[
+                {
+                  icon: "Radio",
+                  label: "Создать канал",
+                  action: () => { setFabOpen(false); alert("Каналы появятся в следующем обновлении"); },
+                },
+                {
+                  icon: "Users",
+                  label: "Создать группу",
+                  action: () => { setFabOpen(false); setNewChatGroup(true); setShowNewChat(true); },
+                },
+                {
+                  icon: "UserPlus",
+                  label: "Создать контакт",
+                  action: () => { setFabOpen(false); setShowNewContact(true); },
+                },
+              ].map((item, i) => (
+                <button
+                  key={item.icon}
+                  onClick={item.action}
+                  className="flex items-center gap-3 pl-4 pr-5 py-2.5 rounded-full animate-fade-in"
+                  style={{
+                    background: "hsl(var(--panel))",
+                    border: "1px solid hsl(var(--divider))",
+                    color: "hsl(var(--foreground))",
+                    animationDelay: `${i * 40}ms`,
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: "hsl(var(--accent))" }}
+                  >
+                    <Icon name={item.icon} size={15} style={{ color: "hsl(var(--gold))" }} />
+                  </div>
+                  <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* FAB кнопка-ручка */}
+          <button
+            onClick={() => {
+              if (fabOpen) { setFabOpen(false); return; }
+              setShowContactsSheet(true);
+              setContactsSearchQuery("");
+            }}
+            className="fixed z-40 w-14 h-14 rounded-full flex items-center justify-center transition-all hover:opacity-90 active:scale-95 md:bottom-6 bottom-20 right-5"
+            style={{
+              background: "hsl(var(--gold))",
+              boxShadow: "0 4px 24px hsl(var(--gold) / 0.35)",
+            }}
+            title="Контакты"
+          >
+            <Icon name="Pencil" size={22} style={{ color: "hsl(var(--primary-foreground))" }} />
+          </button>
+
+          {/* Кнопка-меню (стрелка вверх) рядом с FAB */}
+          <button
+            onClick={() => setFabOpen(v => !v)}
+            className="fixed z-40 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:opacity-80 active:scale-95 md:bottom-6 bottom-20 right-20"
+            style={{
+              background: "hsl(var(--secondary))",
+              border: "1px solid hsl(var(--divider))",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.4)",
+            }}
+            title="Меню создания"
+          >
+            <Icon name="ChevronUp" size={16} style={{ color: "hsl(var(--muted-foreground))", transform: fabOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+          </button>
+        </>
+      )}
+
+      {/* ── CONTACTS SHEET (шторка) ── */}
+      {showContactsSheet && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col justify-end"
+          style={{ background: "rgba(0,0,0,0.6)" }}
+          onClick={() => setShowContactsSheet(false)}
+        >
+          <div
+            className="flex flex-col animate-slide-up rounded-t-2xl"
+            style={{
+              background: "hsl(var(--panel))",
+              maxHeight: "80vh",
+              border: "1px solid hsl(var(--divider))",
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Шторка — handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 rounded-full" style={{ background: "hsl(var(--divider))" }} />
+            </div>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid hsl(var(--divider))" }}>
+              <span className="font-display text-xl font-semibold" style={{ color: "hsl(var(--foreground))" }}>
+                Контакты
+              </span>
+              <button
+                onClick={() => { setShowContactsSheet(false); setShowNewContact(true); }}
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: "hsl(var(--gold))", color: "hsl(var(--primary-foreground))" }}
+                title="Добавить контакт"
+              >
+                <Icon name="Plus" size={16} />
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="px-4 py-2.5">
+              <div className="relative">
+                <Icon name="Search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "hsl(var(--muted-foreground))" }} />
+                <input
+                  className="w-full pl-9 pr-3 py-2.5 text-sm rounded-full outline-none"
+                  style={{ background: "hsl(var(--secondary))", color: "hsl(var(--foreground))", border: "1px solid hsl(var(--divider))" }}
+                  placeholder="Поиск контактов..."
+                  value={contactsSearchQuery}
+                  onChange={e => setContactsSearchQuery(e.target.value)}
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            {/* Contact list */}
+            <div className="overflow-y-auto flex-1">
+              {contacts.filter(c => c.name.toLowerCase().includes(contactsSearchQuery.toLowerCase())).length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3">
+                  <Icon name="Users" size={36} style={{ color: "hsl(var(--gold) / 0.18)" }} />
+                  <p className="text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>
+                    {contacts.length === 0 ? "Нет контактов" : "Ничего не найдено"}
+                  </p>
+                  {contacts.length === 0 && (
+                    <button
+                      onClick={() => { setShowContactsSheet(false); setShowNewContact(true); }}
+                      className="text-xs px-4 py-2 rounded-full transition-all"
+                      style={{ background: "hsl(var(--gold))", color: "hsl(var(--primary-foreground))" }}
+                    >
+                      Добавить первый контакт
+                    </button>
+                  )}
+                </div>
+              ) : (
+                contacts
+                  .filter(c => c.name.toLowerCase().includes(contactsSearchQuery.toLowerCase()))
+                  .map((ct, i) => (
+                    <div
+                      key={ct.id}
+                      className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all animate-fade-in"
+                      style={{ borderBottom: "1px solid hsl(var(--divider))", animationDelay: `${i * 25}ms` }}
+                      onClick={() => {
+                        setShowContactsSheet(false);
+                        startChatWithContact(ct);
+                      }}
+                    >
+                      <Avatar initials={ct.initials} size="md" online={ct.online} />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium" style={{ color: "hsl(var(--foreground))" }}>{ct.name}</div>
+                        <div className="text-xs mt-0.5" style={{ color: ct.online ? "#4ade80" : "hsl(var(--muted-foreground))" }}>
+                          {ct.online ? "В сети" : "Не в сети"}
+                        </div>
+                      </div>
+                      <Icon name="MessageSquare" size={16} style={{ color: "hsl(var(--gold-dim))" }} />
+                    </div>
+                  ))
+              )}
+            </div>
+
+            {/* Safe area bottom */}
+            <div style={{ paddingBottom: "env(safe-area-inset-bottom, 12px)", height: "12px" }} />
+          </div>
+        </div>
       )}
     </div>
   );
